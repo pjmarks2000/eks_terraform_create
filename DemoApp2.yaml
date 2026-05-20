@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy2
+  labels:
+    app: app-v2
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app-v2
+  template:
+    metadata:
+      labels:
+        app: app-v2
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+                - arm64
+      containers:
+      - name: deploy-images
+        image: kellyamadin/new-demo-docker-container-app-use:v2
+        ports:
+        - containerPort: 8080
